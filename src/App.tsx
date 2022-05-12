@@ -1,24 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState} from 'react';
 import './App.css';
+import CocktailService from "./CocktailService";
+import {Drink} from "./types/CocktailTypes";
+import {CocktailList} from "./CocktailList";
 
 function App() {
+  const [areTequilasFetched, setAreTequilasFetched] = useState(false)
+    const [drinks, setDrinks] = useState<Drink[]>([]);
+    const cocktailService = new CocktailService();
+    const buttonText = areTequilasFetched ? 'Loaded' : 'Load Tequila Cocktails'
+
+    const fetchTequilaCocktails= () => {
+        cocktailService.findByName('Tequila').then((drinks) => {
+            setDrinks(drinks)
+            setAreTequilasFetched(true)
+        });
+    }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <button onClick={() => fetchTequilaCocktails()} disabled={areTequilasFetched}>
+          {buttonText}
+        </button>
+        {drinks && <CocktailList drinks={drinks}/>}
     </div>
   );
 }
